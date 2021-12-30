@@ -5,12 +5,17 @@ import { UsersInterface } from './interfaces/usersInterface.interface';
 export const usersRouter: Router = Router();
 
 usersRouter.get('/', (request: Request, response: Response) => {
-    createUser()
     response.send('Hello, World');
 });
 
-usersRouter.post('/create', (request: Request, response: Response) => {
+usersRouter.post('/create', async (request: Request, response: Response) => {
+    
+    try {
+        const user = await createUser(request.body as UsersInterface);
+        response.send()
 
+    } catch (error: any) {
+        throw new Error(error);
+    }
 
-    response.send(request.body)
 });
