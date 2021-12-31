@@ -1,13 +1,13 @@
 export class HttpHandlerExeption {
     
-    public status!: string;
-    public statusCode!: number;
-    public message!: string;
+    private status!: string;
+    private statusCode!: number;
+    private message!: string;
 
     constructor(
         status: string,
         statusCode: number,
-        message: string,
+        message: string | any,
         ){
             this.status = status;
             this.statusCode = statusCode;

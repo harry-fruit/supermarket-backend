@@ -1,4 +1,5 @@
-import { model, Schema } from 'mongoose'
+import mongoose, { Model, model, Mongoose, Schema } from 'mongoose'
+import { UsersInterface } from '../interfaces/usersInterface.interface';
 
 const usersSchema = new Schema({
     name: String,
@@ -12,5 +13,4 @@ const usersSchema = new Schema({
     updatedAt: Date,
 });
 
-export const usersModel = model('Users', usersSchema);
-export const usersCollection = usersModel.createCollection();
+export const usersModel:Model<UsersInterface> = model('Users', usersSchema, 'users');

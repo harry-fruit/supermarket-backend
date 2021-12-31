@@ -6,4 +6,6 @@ export interface UsersInterface {
     email: string,
     login: string,
     password: string,
+    createdAt: Date,
+    updatedAt: Date,
 }
