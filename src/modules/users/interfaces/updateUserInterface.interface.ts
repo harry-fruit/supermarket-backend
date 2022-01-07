@@ -3,6 +3,7 @@ export interface UpdateUserInterface {
     age?: number,
     address?: string,
     phone?: string,
+    rg?: string,
     email?: string,
     login?: string,
     password?: string,

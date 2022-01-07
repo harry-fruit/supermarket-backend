@@ -2,15 +2,12 @@ version: '3.1'
 
 services:
 
-  database:
-    image: mongo
-    container_name: 'mongo-container'
+  supermarket_db:
+    image: mariadb:latest
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootroot
-      MONGO_INITDB_DATABASE: supermarket
-    volumes:
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      MARIADB_ROOT_PASSWORD: rootroot
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_DATABASE: 'supermarket'
     ports:
-      - 27017:27017
+      - "3306:3306"

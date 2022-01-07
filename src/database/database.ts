@@ -1,7 +1,16 @@
-import mongoose from 'mongoose';
+import { Sequelize } from 'sequelize';
+import { HttpHandlerExeption } from '../utils/HttpHandlerExeption';
 
-export const DatabaseConnection = async () => {
-    const conection = await mongoose.connect('mongodb://harry:rootroot@localhost:27017/supermarket', { autoCreate: true })
-        .then(() => console.log('MongoDB is connected.'))
-        .catch((e) => { throw new Error(e) })
+export const DatabaseConnection = async (): Promise<void> => {
+    try {
+        const sequelize: Sequelize = new Sequelize('supermarket','root','rootroot', {
+            host: 'localhost',
+            dialect: 'mariadb',
+        });
+        await sequelize.authenticate();
+        await sequelize.sync()
+            .then(msg => console.log('everything went right'))
+    } catch(error: any) {
+        throw new HttpHandlerExeption('Internal Server Error', 500, error);
+    }
 }
