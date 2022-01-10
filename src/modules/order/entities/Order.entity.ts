@@ -13,11 +13,10 @@ export const OrderEntity = DbInstance.define(
       primaryKey: true,
       defaultValue: UUIDV4,
     },
-    // userId: {
-    //     type: DataType.UUIDV4,
-    //     allowNull: false,
-
-    // },
+    userId: {
+        type: DataType.UUID,
+        allowNull: false,
+    },
     price: {
       type: DataType.DOUBLE,
       allowNull: false,
@@ -30,4 +29,4 @@ export const OrderEntity = DbInstance.define(
   }
 );
 
-OrderEntity.belongsTo(UserEntity);
+OrderEntity.belongsTo(UserEntity, { foreignKey: "userId" });

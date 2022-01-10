@@ -1,7 +1,10 @@
 import { Request, Response, Router } from 'express';
 import { HttpHandlerExeption } from '../../utils/HttpHandlerExeption';
+import { UpdateUserDto } from './dto/updateUser.dto';
 import { createUser } from './handlers/createUser';
+import { deleteUser } from './handlers/deleteUser';
 import { getAllUsers, getUser } from './handlers/getUsers';
+import { updateUser } from './handlers/updateUser';
 import { UserInterface } from './interfaces/User.interface';
 
 export const userRouter: Router = Router();
@@ -41,18 +44,35 @@ userRouter.get('/', async (request: Request, response: Response): Promise<void> 
 userRouter.get('/:rg', async (request: Request, response: Response): Promise<void> => {
     try {
         const { rg } = request.params;
+
         const user = await getUser(rg);
         const formattedResponse = new HttpHandlerExeption('Sucess', 200, user);
+
         response.send(formattedResponse);
     } catch(error: any) {
         throw new HttpHandlerExeption("Internal Server Error", 500, error).onError();
     }
 })
 
-// userRouter.post('update-user', async (request: Request, response: Response): Promise<void> => {
-//     try {
-//         // const response = await 
-//     } catch (error: any) {
-//         throw new HttpHandlerExeption("Internal Server Error", 500, error).onError();
-//     }
-// });
+userRouter.patch('/update-user', async (request: Request, response: Response): Promise<void> => {
+    try {
+        const updateResponse = await updateUser(request.body as UpdateUserDto);
+        const formattedResponse = new HttpHandlerExeption('Updated', 201, updateResponse);
+
+        response.send(formattedResponse);
+    } catch (error: any) {
+        throw error;
+    }
+});
+
+userRouter.delete('/delete-user', async (request: Request, response: Response): Promise<void> => {
+    try{
+
+        const { id } = request.body;
+        const isDeleted: number = await deleteUser(id);
+        response.send(isDeleted);
+
+    } catch(error: any){
+        throw error;
+    }
+})
