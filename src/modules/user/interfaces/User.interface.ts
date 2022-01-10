@@ -1,10 +1,10 @@
-export interface CreateUserInterface {
-    name: string,
+export interface UserInterface {
+    firstName: string,
+    lastName: string,
     age: number,
     address: string,
-    rg: string;
+    rg: string,
     phone: string,
     email: string,
-    login: string,
     password: string,
 }

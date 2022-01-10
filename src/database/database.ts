@@ -1,16 +1,24 @@
 import { Sequelize } from 'sequelize';
-import { HttpHandlerExeption } from '../utils/HttpHandlerExeption';
+import { config as LoadEnvironmentVariables } from 'dotenv';
+
+LoadEnvironmentVariables();
+
+export const DbInstance = new Sequelize(
+    process.env.DB_NAME || 'supermarket',
+    process.env.DB_USER ||'root', 
+    process.env.DB_PWD || 'rootroot', 
+    {
+      dialect: 'mariadb',
+    },
+  );
 
 export const DatabaseConnection = async (): Promise<void> => {
     try {
-        const sequelize: Sequelize = new Sequelize('supermarket','root','rootroot', {
-            host: 'localhost',
-            dialect: 'mariadb',
-        });
-        await sequelize.authenticate();
-        await sequelize.sync()
-            .then(msg => console.log('everything went right'))
+        await DbInstance.authenticate()
+            .then( () => console.log('Database authenticate sucessful') );
+        await DbInstance.sync()
+            .then( () => console.log('Database sync sucessful') );
     } catch(error: any) {
-        throw new HttpHandlerExeption('Internal Server Error', 500, error);
+        throw new Error(error);
     }
-}
+};
