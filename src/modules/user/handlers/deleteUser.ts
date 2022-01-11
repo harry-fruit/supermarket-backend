@@ -1,8 +1,16 @@
-import { Op } from "sequelize"
-import { UserEntity } from "../entities/User.entity"
+import {
+  DeleteHandlerResponse,
+  DeleteHandlerResponseType,
+} from "../../../utils/DeleteHandlerResponse";
+import { UserEntity } from "../entities/User.entity";
 
-export const deleteUser = async (id: string): Promise<number> => {
+export const deleteUser = async (
+  id: string
+): Promise<DeleteHandlerResponseType> => {
+  const response = await UserEntity.destroy({ where: { id } });
 
-    const response: number = await UserEntity.destroy({ where: { id }});
-    return response;
-}
+  if (!response) {
+    return DeleteHandlerResponse(response, "User could not be delete.");
+  }
+  return DeleteHandlerResponse(response, "User deleted.");
+};
