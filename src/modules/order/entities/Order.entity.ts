@@ -30,7 +30,6 @@ export const OrderEntity = DbInstance.define(
   },
   {
       timestamps: true,
-      underscored: true,
   }
 );
 

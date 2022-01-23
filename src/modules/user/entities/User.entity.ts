@@ -47,6 +47,5 @@ export const UserEntity = DbInstance.define(
   },
   {
     timestamps: true,
-    underscored: true,
   }
 );
