@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { HttpHandlerExeption } from '../../utils/HttpHandlerExeption';
+import { HttpHandlerResponse } from '../../utils/HttpHandlerExeption';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { createUser } from './handlers/createUser';
 import { deleteUser } from './handlers/deleteUser';
@@ -13,7 +13,7 @@ userRouter.post('/create-user', async (request: Request, response: Response): Pr
     
     try {
         const user = await createUser(request.body as UserInterface);
-        const handledResponse = new HttpHandlerExeption("created", 201, user);
+        const handledResponse = HttpHandlerResponse("created", 201, user);
         response.send(handledResponse);
 
     } catch (error: any) {
@@ -32,9 +32,8 @@ userRouter.get('/', async (request: Request, response: Response): Promise<void> 
         };
         
         const allUsers = await getAllUsers({ limit, currentPage })
-        const formattedResponse = new HttpHandlerExeption('Sucess', 200, allUsers)
-            .onSucess();
-        
+        const formattedResponse = HttpHandlerResponse('Sucess', 200, allUsers);
+
         response.send(formattedResponse);
     } catch (error: any) {
         throw new Error(error);
@@ -46,18 +45,18 @@ userRouter.get('/:rg', async (request: Request, response: Response): Promise<voi
         const { rg } = request.params;
 
         const user = await getUser(rg);
-        const formattedResponse = new HttpHandlerExeption('Sucess', 200, user);
+        const formattedResponse = HttpHandlerResponse('Sucess', 200, user);
 
         response.send(formattedResponse);
     } catch(error: any) {
-        throw new HttpHandlerExeption("Internal Server Error", 500, error).onError();
+        throw HttpHandlerResponse("Internal Server Error", 500, error);
     }
 })
 
 userRouter.patch('/update-user', async (request: Request, response: Response): Promise<void> => {
     try {
         const updateResponse = await updateUser(request.body as UpdateUserDto);
-        const formattedResponse = new HttpHandlerExeption('Updated', 201, updateResponse);
+        const formattedResponse = HttpHandlerResponse('Updated', 201, updateResponse);
 
         response.send(formattedResponse);
     } catch (error: any) {

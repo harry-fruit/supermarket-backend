@@ -1,14 +1,13 @@
 import { DataType } from "sequelize-typescript";
-import { UUIDV4 } from "sequelize";
 import { DbInstance } from "../../../database/database";
 
 export const UserEntity = DbInstance.define("User", {
     id: {
-      type: DataType.UUID,
+      type: DataType.INTEGER,
       allowNull: false,
       unique: true,
       primaryKey: true,
-      defaultValue: UUIDV4
+      autoIncrement: true,
     },
     firstName: {
       type: DataType.STRING(100),
@@ -45,6 +44,5 @@ export const UserEntity = DbInstance.define("User", {
   },
   {
     timestamps: true,
-    underscored: true,
   }
 );

@@ -1,5 +1,4 @@
 import { DataType } from "sequelize-typescript";
-import { UUIDV4 } from "sequelize";
 import { DbInstance } from "../../../database/database";
 import { UserEntity } from "../../user/entities/User.entity";
 
@@ -7,14 +6,14 @@ export const OrderEntity = DbInstance.define(
   "Order",
   {
     id: {
-      type: DataType.UUID,
+      type: DataType.INTEGER,
       allowNull: false,
       unique: true,
       primaryKey: true,
-      defaultValue: UUIDV4,
+      autoIncrement: true
     },
     userId: {
-        type: DataType.UUID,
+        type: DataType.INTEGER,
         allowNull: false,
     },
     price: {
@@ -25,7 +24,6 @@ export const OrderEntity = DbInstance.define(
   },
   {
       timestamps: true,
-      underscored: true,
   }
 );
 

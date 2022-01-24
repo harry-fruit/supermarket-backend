@@ -1,4 +1,4 @@
-import { HttpHandlerExeption } from "../../../utils/HttpHandlerExeption";
+import { HttpHandlerResponse } from "../../../utils/HttpHandlerExeption";
 import { FindAllFilter } from "../../../utils/interfaces/FindAllFilter.interface";
 import { UserEntity } from "../entities/User.entity";
 
@@ -13,7 +13,7 @@ export const getAllUsers = async (findParams: FindAllFilter) => {
         
         return allUsers;
     } catch(error: any) {
-        throw new HttpHandlerExeption('Internal Server Error', 500, error).onError()
+        throw HttpHandlerResponse('Internal Server Error', 500, error);
     }
 }
 
@@ -22,12 +22,12 @@ export const getUser = async (rg: string): Promise<any> => {
         const user = await UserEntity.findOne({ where: { rg } })
 
         if (!user){
-            throw new HttpHandlerExeption('Not found', 404, 'User not found.').onError();
+            throw HttpHandlerResponse('Not found', 404, 'User not found.');
         }
 
         return user;
 
     } catch(error: any) {
-        throw new HttpHandlerExeption('Internal Server Error', 500, error).onError()
+        throw HttpHandlerResponse('Internal Server Error', 500, error);
     }
 }
