@@ -4,7 +4,7 @@ import { HttpResponse } from '../../utils/HttpResponse';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { createUser } from './handlers/createUser';
 import { deleteUser } from './handlers/deleteUser';
-import { getAllUsers, getUser } from './handlers/getUsers';
+import { getAllUsers, getUser } from './handlers/getUser';
 import { updateUser } from './handlers/updateUser';
 import { UserInterface } from './interfaces/User.interface';
 

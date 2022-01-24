@@ -19,19 +19,13 @@ export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<User
     }
 }
 
-export const getUser = async (rg: string): Promise<any> => {
-    try {
-        const user = await UserEntity.findOne({ where: { rg } })
-
-        if (!user){
-            throw HttpResponse('Not found', 404, 'User not found.');
-        }
-
 export const getUser = async (rg: string): Promise<Model<UserInterface>> => {
+
     const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { rg } });
+
     if (!user){
-      throw "user doesn't exist"
-    }
+      throw "user doesn't exist";
+    };
+
     return user;
-    )
 };

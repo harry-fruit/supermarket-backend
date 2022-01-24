@@ -6,5 +6,6 @@ export const updateUser = async (payload: UpdateUserDto): Promise<UpdateHandlerR
   const { rg, ...fieldsToUpdate } = payload;
   const response = await UserEntity.update(fieldsToUpdate, { where: { rg } });
   console.log(response)
+  //TODO: FIX
   return response;
 };
