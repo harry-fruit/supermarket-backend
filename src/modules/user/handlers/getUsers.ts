@@ -1,10 +1,12 @@
-import { HttpHandlerResponse } from "../../../utils/HttpHandlerExeption";
-import { FindAllFilter } from "../../../utils/interfaces/FindAllFilter.interface";
+import { Model } from "sequelize/dist";
+import { HttpResponse } from "../../../utils/HttpResponse";
+import { FindAllFilter } from "../../../utils/types/FindAllFilter.type";
 import { UserEntity } from "../entities/User.entity";
+import { UserInterface } from "../interfaces/User.interface";
 
-export const getAllUsers = async (findParams: FindAllFilter) => {
-    try {
-        const { limit, currentPage } = findParams; 
+export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<UserInterface>[]> => {
+  try {
+    const { limit, currentPage } = findParams;
 
         const allUsers = await UserEntity.findAll({
             limit: limit || 10,
@@ -13,7 +15,7 @@ export const getAllUsers = async (findParams: FindAllFilter) => {
         
         return allUsers;
     } catch(error: any) {
-        throw HttpHandlerResponse('Internal Server Error', 500, error);
+        throw HttpResponse('Internal Server Error', 500, error);
     }
 }
 
@@ -22,12 +24,14 @@ export const getUser = async (rg: string): Promise<any> => {
         const user = await UserEntity.findOne({ where: { rg } })
 
         if (!user){
-            throw HttpHandlerResponse('Not found', 404, 'User not found.');
+            throw HttpResponse('Not found', 404, 'User not found.');
         }
 
-        return user;
-
-    } catch(error: any) {
-        throw HttpHandlerResponse('Internal Server Error', 500, error);
+export const getUser = async (rg: string): Promise<Model<UserInterface>> => {
+    const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { rg } });
+    if (!user){
+      throw "user doesn't exist"
     }
-}
+    return user;
+    )
+};

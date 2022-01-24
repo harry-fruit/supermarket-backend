@@ -1,0 +1,1 @@
+1 - Coverage em test jest => 80%

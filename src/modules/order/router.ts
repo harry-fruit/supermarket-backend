@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { HttpHandlerResponse } from "../../utils/HttpHandlerExeption";
+import { HttpResponse } from "../../utils/HttpResponse";
 import { createOrder } from "./handlers/createOrder";
 import { OrderInterface } from "./interfaces/Order.interface";
 
@@ -9,7 +9,7 @@ orderRouter.post('/create-order', async (request: Request, response: Response): 
     
     try {
         const order = await createOrder(request.body as OrderInterface);
-        const handledResponse = HttpHandlerResponse("created", 201, order);
+        const handledResponse = HttpResponse("created", 201, order);
         response.send(handledResponse);
 
     } catch (error: any) {

@@ -16,11 +16,16 @@ export const OrderEntity = DbInstance.define(
         type: DataType.INTEGER,
         allowNull: false,
     },
-    price: {
+    totalPrice: {
       type: DataType.DOUBLE,
       allowNull: false,
       defaultValue: 0.0,
     },
+    //TODO: Essa relação depende da tabela "products"
+    productsId: {
+      type: DataType.UUID,
+      allowNull: false,
+    }
   },
   {
       timestamps: true,

@@ -1,7 +1,9 @@
 import { DataType } from "sequelize-typescript";
 import { DbInstance } from "../../../database/database";
 
-export const UserEntity = DbInstance.define("User", {
+export const UserEntity = DbInstance.define(
+  "User",
+  {
     id: {
       type: DataType.INTEGER,
       allowNull: false,
