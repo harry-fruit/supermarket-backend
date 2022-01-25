@@ -1,24 +1,36 @@
 import { Model } from "sequelize/dist";
+import { Bcrypt } from "../../../utils/Bcrypt";
 import { UpdateUserDto } from "../dto/updateUser.dto";
 import { UserEntity } from "../entities/User.entity";
 import { UserInterface } from "../interfaces/User.interface";
 
-export const updateUser = async (payload: UpdateUserDto): Promise<Model<UserInterface> | null>  => {
-  const { cpf, ...fieldsToUpdate } = payload;
+export const updateUser = async (payload: UpdateUserDto): Promise<Model<UserInterface> | string>  => {
+  const { password, cpf, email } = payload;
 
-  let user = await UserEntity.findOne({ where: { cpf } })
+  const emailExists: Model<UserInterface> | null = await UserEntity.findOne({ where: { email } })
+  const cpfExists  : Model<UserInterface> | null = await UserEntity.findOne({ where: { cpf } })
 
-  if (!user) {
-    return null;
+  if (emailExists) {
+    return `The E-Mail '${email}' is not available.`
+  } 
+  else if (!cpfExists) {
+    return `There are no cpf '${cpf}' associated to an User in our database.`
+  };
+  
+  delete payload.cpf;
+
+  if (password){
+    const newPassword = await Bcrypt.encrypt(password);
+    payload.password = newPassword;
   }
 
-  const [ didUpdate ] = await UserEntity.update(fieldsToUpdate, { where: { cpf }, limit: 1 });
+  const [ didUpdate ] = await UserEntity.update(payload, { where: { cpf }, limit: 1 });
 
   if (!didUpdate){
-    return null;
+    return "User can't be updated";
   }
 
-  user = (await UserEntity.findOne({ where: { cpf } }));
+  const updatedUser: Model<UserInterface> = (await UserEntity.findOne({ where: { cpf } })) as Model<UserInterface>;
 
-  return user;
+  return updatedUser;
 };

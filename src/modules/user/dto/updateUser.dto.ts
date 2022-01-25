@@ -4,7 +4,7 @@ export type UpdateUserDto = {
   age?: number;
   gender?: string;
   address?: string;
-  cpf: string;
+  cpf?: string;
   phone?: string;
   email?: string;
   password?: string;
