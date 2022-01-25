@@ -1,15 +1,14 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import { Model } from "sequelize";
 import { DeleteHandlerResponseType } from "../../utils/DeleteHandlerResponse";
 import { HttpResponse, HttpResponseType } from "../../utils/HttpResponse";
 import { UpdateUserDto } from "./dto/updateUser.dto";
 import { createUser } from "./handlers/createUser";
 import { deleteUser } from "./handlers/deleteUser";
-import { getAllUsers, getUser } from "./handlers/getUsers";
 import { updateUser } from "./handlers/updateUser";
 import { UserInterface } from "./interfaces/User.interface";
 import { StatusCodes as HttpStatusCode , ReasonPhrases as HttpStatus } from 'http-status-codes';
-import { HandlerExeption } from "../../utils/HandlerExeption";
+import { getAllUsers, getUser } from "./handlers/getUser";
 
 export const userRouter: Router = Router();
 

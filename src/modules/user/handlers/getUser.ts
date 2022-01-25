@@ -1,10 +1,7 @@
-import { Model } from "sequelize";
-import { HttpResponse } from "../../../utils/HttpResponse";
+import { Model } from "sequelize/dist";
 import { FindAllFilter } from "../../../utils/types/FindAllFilter.type";
 import { UserEntity } from "../entities/User.entity";
 import { UserInterface } from "../interfaces/User.interface";
-import { StatusCodes as HttpStatusCode , ReasonPhrases as HttpStatus } from 'http-status-codes';
-import { HandlerExeption } from "../../../utils/HandlerExeption";
 
 export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<UserInterface>[]> => {
   try {
@@ -23,17 +20,12 @@ export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<User
 };
 
 export const getUser = async (rg: string): Promise<Model<UserInterface>> => {
-  try {
+
     const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { rg } });
 
-    if (!user) {
-      throw HttpResponse( HttpStatus.NOT_FOUND, HttpStatusCode.NOT_FOUND, 'User Not Found' );
-    }
+    if (!user){
+      throw "user doesn't exist";
+    };
 
     return user;
-    
-  } catch (error: any) {
-    throw error
-    ;
-  }
 };

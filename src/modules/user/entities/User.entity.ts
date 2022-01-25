@@ -1,5 +1,4 @@
 import { DataType } from "sequelize-typescript";
-import { UUIDV4 } from "sequelize";
 import { DbInstance } from "../../../database/database";
 
 export const UserEntity = DbInstance.define(
