@@ -3,9 +3,13 @@ import { FindAllFilter } from "../../../utils/types/FindAllFilter.type";
 import { UserEntity } from "../entities/User.entity";
 import { UserInterface } from "../interfaces/User.interface";
 
-export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<UserInterface>[]> => {
+export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<UserInterface>[] | string> => {
   try {
     const { limit, currentPage } = findParams;
+
+    if(!currentPage) {
+      return "Please, insert the currentPage value."
+    }
 
     const allUsers: Model<UserInterface>[] = await UserEntity.findAll({
       limit: limit || 10,
@@ -15,17 +19,17 @@ export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<User
     return allUsers;
 
   } catch (error: any) {
-    throw error
+    throw error;
   }
 };
 
-export const getUser = async (rg: string): Promise<Model<UserInterface>> => {
-
-    const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { rg } });
-
-    if (!user){
-      throw "user doesn't exist";
-    };
-
+export const getUser = async (cpf: string): Promise<Model<UserInterface> | null> => {
+  try{
+    const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { cpf } });
+    
     return user;
+
+  } catch (error) {
+    throw error;
+  };
 };

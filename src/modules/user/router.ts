@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
 import { Model } from "sequelize";
-import { DeleteHandlerResponseType } from "../../utils/DeleteHandlerResponse";
 import { HttpResponse, HttpResponseType } from "../../utils/HttpResponse";
 import { UpdateUserDto } from "./dto/updateUser.dto";
 import { createUser } from "./handlers/createUser";
@@ -9,89 +8,248 @@ import { updateUser } from "./handlers/updateUser";
 import { UserInterface } from "./interfaces/User.interface";
 import { StatusCodes as HttpStatusCode , ReasonPhrases as HttpStatus } from 'http-status-codes';
 import { getAllUsers, getUser } from "./handlers/getUser";
+import { ErrorHandler } from "../../utils/ErrorHandler";
+import { IsValidCPF } from "../../utils/Validators";
 
 export const userRouter: Router = Router();
 
 userRouter.post("/create-user", async (request: Request, response: Response): Promise<void> => {
     try {
+      const payload = request.body as UserInterface;
+      
+      const { cpf } = payload;
+      const isValidCPF = IsValidCPF(cpf);
 
-      const user = await createUser(request.body as UserInterface);
-      const handledResponse: HttpResponseType = HttpResponse(HttpStatus.CREATED, HttpStatusCode.CREATED, user);
+      if(!isValidCPF){
+
+        const message: string = 'Insert a valid CPF.'
+        
+        const responsePayload: HttpResponseType = HttpResponse(
+          HttpStatus.NOT_ACCEPTABLE,
+          HttpStatusCode.NOT_ACCEPTABLE, 
+          message,
+          );
+        
+        response
+          .status(HttpStatusCode.NOT_ACCEPTABLE)
+          .send(responsePayload);
+          return;
+      }
+      
+      
+      const handledResponse: Model<UserInterface> | string = await createUser(payload);
+      
+      if(typeof handledResponse == 'string'){
+        
+        const responsePayload: HttpResponseType = HttpResponse(HttpStatus.NOT_ACCEPTABLE, HttpStatusCode.NOT_ACCEPTABLE, handledResponse);
+        
+        response
+          .status(HttpStatusCode.NOT_ACCEPTABLE)
+          .send(responsePayload);
+          return;
+      }
+
+      const responsePayload: HttpResponseType = HttpResponse(HttpStatus.CREATED, HttpStatusCode.CREATED, handledResponse);
 
       response
         .status(HttpStatusCode.CREATED)
-        .send(handledResponse);
+        .send(responsePayload);
+      
+      return;
     
       } catch (error: any) {
-      // throw HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
+        throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error);
     };
   }
 );
 
-userRouter.get("/", async (request: Request, response: Response, next): Promise<void> => {
+userRouter.get("/", async (request: Request, response: Response): Promise<void> => {
     try {
       const limit = Number.parseInt(request.query.limit as string);
       const currentPage = Number.parseInt(request.query.currentPage as string);
 
-      const allUsers = await getAllUsers({ limit, currentPage });
-      const formattedResponse = HttpResponse(HttpStatus.OK, HttpStatusCode.OK, allUsers);
+      const handledResponse: Model<UserInterface>[] | string = await getAllUsers({ limit, currentPage });
+      
+      if(typeof handledResponse == 'string'){
+        
+        const responsePayload: HttpResponseType = HttpResponse(HttpStatus.BAD_REQUEST, HttpStatusCode.BAD_REQUEST, handledResponse);
+        
+        response
+          .status(HttpStatusCode.BAD_REQUEST)
+          .send(responsePayload);
+          return;
+      }
+
+      const responsePayload: HttpResponseType = HttpResponse(HttpStatus.OK, HttpStatusCode.OK, handledResponse);
 
       response
         .status(HttpStatusCode.OK)
-        .send(formattedResponse);
+        .send(responsePayload);
+
         
-    } catch (error: any) {
-      // next(HandlerExeption( HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error));
+      } catch (error: any) {
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error);
     }
   }
 );
 
-userRouter.get(
-  "/:rg",
-  async (request: Request, response: Response): Promise<void> => {
+userRouter.get("/get-user", async (request: Request, response: Response): Promise<void> => {
     try {
-      const { rg } = request.params;
+      let { cpf } = request.query;
+      
+      if (!cpf) {
+        const message = "Please, insert a value to CPF."
+        const responsePayload = HttpResponse(HttpStatus.BAD_REQUEST, HttpStatusCode.BAD_REQUEST, message);
 
-      const user: Model<UserInterface> = await getUser(rg);
-      const formattedResponse: HttpResponseType = HttpResponse(HttpStatus.OK, HttpStatusCode.OK, user);
+        response
+          .status(HttpStatusCode.BAD_REQUEST)
+          .send(responsePayload);
+        
+        return;
+      }
 
-      response.send(formattedResponse);
+      cpf = cpf.toString();
+
+      const isValidCPF = IsValidCPF(cpf);
+
+      if (!isValidCPF) {
+        const message = "Please, insert a valid value to CPF."
+        const responsePayload = HttpResponse(HttpStatus.BAD_REQUEST, HttpStatusCode.BAD_REQUEST, message);
+
+        response
+          .status(HttpStatusCode.BAD_REQUEST)
+          .send(responsePayload);
+        
+        return;
+      }
+
+      const handledResponse: Model<UserInterface> | null = await getUser(cpf);
+
+      if(!handledResponse) {
+        const responsePayload = HttpResponse(HttpStatus.NOT_FOUND, HttpStatusCode.NOT_FOUND, {})
+        response
+          .status(HttpStatusCode.NOT_FOUND)
+          .send(responsePayload);
+        
+        return;
+      }
+
+      const responsePayload: HttpResponseType = HttpResponse(HttpStatus.OK, HttpStatusCode.OK, handledResponse);
+
+      response.send(responsePayload);
+      
     } catch (error: any) {
-      // throw HandlerExeption(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
-    }
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
+    };
   }
 );
 
-//TODO: Fixar retorno
 userRouter.patch("/update-user", async (request: Request, response: Response): Promise<void> => {
     try {
-      const updateResponse = await updateUser(request.body as UpdateUserDto);
-      const formattedResponse = HttpResponse(HttpStatus.CREATED, HttpStatusCode.CREATED, updateResponse);
+      const payload = request.body as UpdateUserDto;
+      
+      const { cpf } = payload;
+      
+      if (!cpf) {
+        const message: string = 'Insert a CPF.'
+        
+        const responsePayload: HttpResponseType = HttpResponse(
+          HttpStatus.NOT_ACCEPTABLE,
+          HttpStatusCode.NOT_ACCEPTABLE, 
+          message,
+          );
+        
+        response
+          .status(HttpStatusCode.NOT_ACCEPTABLE)
+          .send(responsePayload);
+          return;
+      }
+    
+      const isValidCPF = IsValidCPF(cpf);
+
+      if(!isValidCPF){
+
+        const message: string = 'Insert a valid CPF.'
+        
+        const responsePayload: HttpResponseType = HttpResponse(
+          HttpStatus.NOT_ACCEPTABLE,
+          HttpStatusCode.NOT_ACCEPTABLE, 
+          message,
+          );
+        
+        response
+          .status(HttpStatusCode.NOT_ACCEPTABLE)
+          .send(responsePayload);
+          return;
+      }
+      
+      const handledResponse: Model<UserInterface> | string  = await updateUser(request.body as UpdateUserDto);
+
+      if(typeof handledResponse == 'string') {
+        if (handledResponse === 'User not found.') {
+          const responsePayload = HttpResponse(HttpStatus.NOT_FOUND, HttpStatusCode.NOT_FOUND, handledResponse);
+          response
+            .status(HttpStatusCode.NOT_FOUND)
+            .send(responsePayload);
+          
+          return;
+        } 
+        else {
+          const responsePayload = HttpResponse(HttpStatus.BAD_REQUEST, HttpStatusCode.BAD_REQUEST, handledResponse);
+          response
+            .status(HttpStatusCode.BAD_REQUEST)
+            .send(responsePayload);
+          return;
+
+        }
+      };
+
+      const responsePayload = HttpResponse(HttpStatus.CREATED, HttpStatusCode.CREATED, handledResponse);
 
       response
         .status(HttpStatusCode.CREATED)
-        .send(formattedResponse);
+        .send(responsePayload);
 
     } catch (error: any) {
-      // throw HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
-    }
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
+    };
   }
 );
 
-//TODO: Fixar retorno
 userRouter.delete( "/delete-user", async (request: Request, response: Response): Promise<void> => {
     try {
 
       const { id } = request.body;
-      const isDeleted: DeleteHandlerResponseType = await deleteUser(id);
-      const formattedResponse = HttpResponse(HttpStatus.ACCEPTED, HttpStatusCode.ACCEPTED, isDeleted)
+
+      if(!id){
+        const message = "Please, insert an Id"
+        const responsePayload: HttpResponseType = HttpResponse(HttpStatus.BAD_REQUEST, HttpStatusCode.BAD_REQUEST, message)
+        response
+          .status(HttpStatusCode.BAD_REQUEST)
+          .send(responsePayload);
+        
+        return;
+      }
+      
+      const isDeleted: number = await deleteUser(id);
+
+      if(!isDeleted) {
+        const responsePayload: HttpResponseType = HttpResponse(HttpStatus.NOT_ACCEPTABLE, HttpStatusCode.NOT_ACCEPTABLE, "User Could not be deleted")
+        response
+          .status(HttpStatusCode.NOT_ACCEPTABLE)
+          .send(responsePayload);
+        
+        return;
+      }
+
+      const responsePayload: HttpResponseType = HttpResponse(HttpStatus.ACCEPTED, HttpStatusCode.ACCEPTED, "User deleted");
       
       response
         .status(HttpStatusCode.ACCEPTED)
-        .send(formattedResponse);
+        .send(responsePayload);
       
     } catch (error: any) {
-      throw HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
-    }
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
+    };
   }
 );
