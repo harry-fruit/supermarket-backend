@@ -19,7 +19,7 @@ export const OrderEntity = DbInstance.define(
     totalPrice: {
       type: DataType.DOUBLE,
       allowNull: false,
-      defaultValue: 0.1,
+      defaultValue: 0.2,
     },
     // productsId: {
     //   type: DataType.INTEGER,
