@@ -12,13 +12,15 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "class-validator": "^0.13.2",
+    "colors": "^1.4.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
+    "express-async-errors": "^3.1.1",
+    "http-status-codes": "^2.2.0",
     "mariadb": "^2.5.5",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.12.5",
-    "sequelize-typescript": "^2.1.2",
-    "uuidv4": "^6.2.12"
+    "sequelize-typescript": "^2.1.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

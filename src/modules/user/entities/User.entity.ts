@@ -6,11 +6,11 @@ export const UserEntity = DbInstance.define(
   "User",
   {
     id: {
-      type: DataType.UUID,
+      type: DataType.INTEGER,
       allowNull: false,
       unique: true,
       primaryKey: true,
-      defaultValue: UUIDV4,
+      autoIncrement: true,
     },
     firstName: {
       type: DataType.STRING(100),
@@ -22,6 +22,10 @@ export const UserEntity = DbInstance.define(
     },
     age: {
       type: DataType.INTEGER,
+      allowNull: false,
+    },
+    gender: {
+      type: DataType.STRING(20),
       allowNull: false,
     },
     address: {
@@ -37,7 +41,7 @@ export const UserEntity = DbInstance.define(
       allowNull: true,
     },
     email: {
-      type: DataType.STRING(255),
+      type: DataType.STRING(150),
       allowNull: false,
     },
     password: {

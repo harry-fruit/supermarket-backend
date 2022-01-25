@@ -4,11 +4,16 @@ import { UserEntity } from "../entities/User.entity";
 import { UserInterface } from "../interfaces/User.interface";
 
 export const createUser = async (payload: UserInterface): Promise<Model<UserInterface>> => {
-  const { password } = payload;
-
-  const hashedPassword = await Bcrypt.encrypt(password);
-  payload.password = hashedPassword;
-
-  const result: Model<UserInterface> = await UserEntity.create({ ...payload });
-  return result;
+  try {
+    const { password } = payload;
+  
+    const hashedPassword = await Bcrypt.encrypt(password);
+    payload.password = hashedPassword;
+  
+    const result: Model<UserInterface> = await UserEntity.create({ ...payload });
+    return result;
+    
+  } catch (error) {
+    throw error;
+  }
 };

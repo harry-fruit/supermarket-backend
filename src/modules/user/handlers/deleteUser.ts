@@ -5,12 +5,18 @@ import {
 import { UserEntity } from "../entities/User.entity";
 
 export const deleteUser = async (
-  id: string
+  id: number
 ): Promise<DeleteHandlerResponseType> => {
-  const response = await UserEntity.destroy({ where: { id } });
+  try {
+    const response = await UserEntity.destroy({ where: { id } });
+  
+    if (!response) {
+      return DeleteHandlerResponse(response, "User could not be delete.");
+    };
 
-  if (!response) {
-    return DeleteHandlerResponse(response, "User could not be delete.");
-  }
-  return DeleteHandlerResponse(response, "User deleted.");
+    return DeleteHandlerResponse(response, "User deleted.");
+
+  } catch (error) {
+    throw error;
+  };
 };
