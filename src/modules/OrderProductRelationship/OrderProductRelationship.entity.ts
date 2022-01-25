@@ -1,7 +1,7 @@
-import { DbInstance } from "../../../database/database";
+import { DbInstance } from "../../database/database";
 import { DataType } from "sequelize-typescript";
-import { OrderEntity } from "./Order.entity";
-import { ProductEntity } from "../../product/entities/Product.entity";
+import { OrderEntity } from "../order/entities/Order.entity";
+import { ProductEntity } from "../product/entities/Product.entity";
 
 export const OrderProductRelationship = DbInstance.define(
     'OrderProductRelationship', 

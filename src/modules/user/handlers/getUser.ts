@@ -19,13 +19,9 @@ export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<User
   }
 };
 
-export const getUser = async (rg: string): Promise<Model<UserInterface>> => {
+export const getUser = async (cpf: string): Promise<Model<UserInterface> | null> => {
 
-    const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { rg } });
-
-    if (!user){
-      throw "user doesn't exist";
-    };
-
+    const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { cpf } });
+    
     return user;
 };

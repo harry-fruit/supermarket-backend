@@ -12,11 +12,11 @@ export const UserEntity = DbInstance.define(
       autoIncrement: true,
     },
     firstName: {
-      type: DataType.STRING(100),
+      type: DataType.STRING(50),
       allowNull: false,
     },
     lastName: {
-      type: DataType.STRING(100),
+      type: DataType.STRING(50),
       allowNull: false,
     },
     age: {
@@ -24,22 +24,24 @@ export const UserEntity = DbInstance.define(
       allowNull: false,
     },
     gender: {
-      type: DataType.STRING(20),
+      type: DataType.CHAR(1),
       allowNull: false,
     },
     address: {
       type: DataType.STRING(255),
       allowNull: false,
     },
-    rg: {
+    cpf: {
       type: DataType.STRING(50),
       allowNull: false,
+      unique: true,
     },
     phone: {
       type: DataType.STRING(50),
       allowNull: true,
     },
     email: {
+      unique: true,
       type: DataType.STRING(150),
       allowNull: false,
     },

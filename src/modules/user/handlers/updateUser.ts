@@ -1,11 +1,24 @@
+import { Model } from "sequelize/dist";
 import { UpdateUserDto } from "../dto/updateUser.dto";
 import { UserEntity } from "../entities/User.entity";
+import { UserInterface } from "../interfaces/User.interface";
 
-export const updateUser = async (payload: UpdateUserDto): Promise<any>  => {
-  const { rg, ...fieldsToUpdate } = payload;
+export const updateUser = async (payload: UpdateUserDto): Promise<Model<UserInterface> | null>  => {
+  const { cpf, ...fieldsToUpdate } = payload;
 
-  const response = await UserEntity.update(fieldsToUpdate, { where: { rg } });
-  console.log(response)
-  //TODO: FIX
-  return response;
+  let user = await UserEntity.findOne({ where: { cpf } })
+
+  if (!user) {
+    return null;
+  }
+
+  const [ didUpdate ] = await UserEntity.update(fieldsToUpdate, { where: { cpf }, limit: 1 });
+
+  if (!didUpdate){
+    return null;
+  }
+
+  user = (await UserEntity.findOne({ where: { cpf } }));
+
+  return user;
 };

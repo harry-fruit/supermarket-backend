@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
 import { Model } from "sequelize";
-import { DeleteHandlerResponseType } from "../../utils/DeleteHandlerResponse";
 import { HttpResponse, HttpResponseType } from "../../utils/HttpResponse";
 import { UpdateUserDto } from "./dto/updateUser.dto";
 import { createUser } from "./handlers/createUser";
@@ -9,6 +8,7 @@ import { updateUser } from "./handlers/updateUser";
 import { UserInterface } from "./interfaces/User.interface";
 import { StatusCodes as HttpStatusCode , ReasonPhrases as HttpStatus } from 'http-status-codes';
 import { getAllUsers, getUser } from "./handlers/getUser";
+import { ErrorHandler } from "../../utils/ErrorHandler";
 
 export const userRouter: Router = Router();
 
@@ -23,7 +23,7 @@ userRouter.post("/create-user", async (request: Request, response: Response): Pr
         .send(handledResponse);
     
       } catch (error: any) {
-      // throw HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
+        throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error);
     };
   }
 );
@@ -39,33 +39,52 @@ userRouter.get("/", async (request: Request, response: Response, next): Promise<
       response
         .status(HttpStatusCode.OK)
         .send(formattedResponse);
+
         
-    } catch (error: any) {
-      // next(HandlerExeption( HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error));
+      } catch (error: any) {
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
     }
   }
 );
 
-userRouter.get(
-  "/:rg",
-  async (request: Request, response: Response): Promise<void> => {
+userRouter.get("/:cpf", async (request: Request, response: Response): Promise<void> => {
     try {
-      const { rg } = request.params;
+      const { cpf } = request.params;
 
-      const user: Model<UserInterface> = await getUser(rg);
+      const user: Model<UserInterface> | null = await getUser(cpf);
+
+      if(!user) {
+        const responsePayload = HttpResponse(HttpStatus.NOT_FOUND, HttpStatusCode.NOT_FOUND, {})
+        response
+          .status(HttpStatusCode.NOT_FOUND)
+          .send(responsePayload);
+        
+        return;
+      }
+
       const formattedResponse: HttpResponseType = HttpResponse(HttpStatus.OK, HttpStatusCode.OK, user);
 
       response.send(formattedResponse);
+      
     } catch (error: any) {
-      // throw HandlerExeption(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
-    }
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
+    };
   }
 );
 
-//TODO: Fixar retorno
 userRouter.patch("/update-user", async (request: Request, response: Response): Promise<void> => {
     try {
       const updateResponse = await updateUser(request.body as UpdateUserDto);
+
+      if(!updateResponse) {
+        const responsePayload = HttpResponse(HttpStatus.NOT_FOUND, HttpStatusCode.NOT_FOUND, {});
+        response
+          .status(HttpStatusCode.NOT_FOUND)
+          .send(responsePayload);
+        
+        return;
+      };
+
       const formattedResponse = HttpResponse(HttpStatus.CREATED, HttpStatusCode.CREATED, updateResponse);
 
       response
@@ -73,25 +92,35 @@ userRouter.patch("/update-user", async (request: Request, response: Response): P
         .send(formattedResponse);
 
     } catch (error: any) {
-      // throw HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
-    }
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
+    };
   }
 );
 
-//TODO: Fixar retorno
 userRouter.delete( "/delete-user", async (request: Request, response: Response): Promise<void> => {
     try {
 
       const { id } = request.body;
-      const isDeleted: DeleteHandlerResponseType = await deleteUser(id);
-      const formattedResponse = HttpResponse(HttpStatus.ACCEPTED, HttpStatusCode.ACCEPTED, isDeleted)
+      
+      const isDeleted: number = await deleteUser(id);
+
+      if(!isDeleted) {
+        const responsePayload = HttpResponse(HttpStatus.NOT_ACCEPTABLE, HttpStatusCode.NOT_ACCEPTABLE, "User Could not be deleted")
+        response
+          .status(HttpStatusCode.NOT_ACCEPTABLE)
+          .send(responsePayload);
+        
+        return;
+      }
+
+      const formattedResponse = HttpResponse(HttpStatus.ACCEPTED, HttpStatusCode.ACCEPTED, "User deleted");
       
       response
         .status(HttpStatusCode.ACCEPTED)
         .send(formattedResponse);
       
     } catch (error: any) {
-      throw HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatusCode.INTERNAL_SERVER_ERROR, error);
-    }
+      throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
+    };
   }
 );
