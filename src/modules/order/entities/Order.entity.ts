@@ -1,6 +1,6 @@
 import { DataType } from "sequelize-typescript";
 import { DbInstance } from "../../../database/database";
-import { UserEntity } from "../../user/entities/User.entity";
+import { UserEntity } from "../../User/entities/User.entity";
 
 export const OrderEntity = DbInstance.define(
   "Order",

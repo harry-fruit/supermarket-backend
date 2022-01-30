@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import { userRouter } from "./modules/user/router";
+import { userRouter } from "./modules/User/router";
 import { DatabaseConnection } from "./database/database";
 import { orderRouter } from "./modules/Order/router";
 import 'express-async-errors';

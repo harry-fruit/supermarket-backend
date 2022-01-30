@@ -1,15 +1,15 @@
 import { Request, Response, Router } from "express";
 import { Model } from "sequelize";
 import { HttpResponse, HttpResponseType } from "../../utils/HttpResponse";
-import { UpdateUserDto } from "./dto/updateUser.dto";
-import { CreateUser } from "./handlers/createUser";
-import { UpdateUser } from "./handlers/updateUser";
-import { UserInterface } from "./interfaces/User.interface";
 import { StatusCodes as HttpStatusCode , ReasonPhrases as HttpStatus } from 'http-status-codes';
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import { IsValidCPF } from "../../utils/Validators";
-import { GetAllUsers, GetUser } from "./handlers/getUser";
-import { DeleteUser } from "./handlers/deleteUser";
+import { UserInterface } from "./interfaces/User.interface";
+import { CreateUser } from "./handlers/CreateUser";
+import { GetAllUsers, GetUser } from "./handlers/GetUser";
+import { UpdateUserDto } from "./dto/updateUser.dto";
+import { UpdateUser } from "./handlers/UpdateUser";
+import { DeleteUser } from "./handlers/DeleteUser";
 
 export const userRouter: Router = Router();
 
