@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import { userRouter } from "./modules/user/router";
 import { DatabaseConnection } from "./database/database";
-import { orderRouter } from "./modules/order/router";
+import { orderRouter } from "./modules/Order/router";
 import 'express-async-errors';
 
 const app = express();

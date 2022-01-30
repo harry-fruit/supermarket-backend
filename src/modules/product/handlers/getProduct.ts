@@ -4,7 +4,7 @@ import { FindAllFilter } from "../../../utils/types/FindAllFilter.type";
 import { ProductEntity } from "../entities/Product.entity";
 import { ProductInterface } from "../interfaces/Product.interface";
 
-export const getAllProducts = async (findParams: FindAllFilter): Promise<Model<ProductInterface>[]> => {
+export const GetAllProducts = async (findParams: FindAllFilter): Promise<Model<ProductInterface>[]> => {
     try {
       const { limit, currentPage } = findParams;
   

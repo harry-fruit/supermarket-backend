@@ -3,7 +3,7 @@ import { FindAllFilter } from "../../../utils/types/FindAllFilter.type";
 import { UserEntity } from "../entities/User.entity";
 import { UserInterface } from "../interfaces/User.interface";
 
-export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<UserInterface>[] | string> => {
+export const GetAllUsers = async (findParams: FindAllFilter): Promise<Model<UserInterface>[] | string> => {
   try {
     const { limit, currentPage } = findParams;
 
@@ -23,7 +23,7 @@ export const getAllUsers = async (findParams: FindAllFilter): Promise<Model<User
   }
 };
 
-export const getUser = async (cpf: string): Promise<Model<UserInterface> | null> => {
+export const GetUser = async (cpf: string): Promise<Model<UserInterface> | null> => {
   try{
     const user: Model<UserInterface> | null = await UserEntity.findOne({ where: { cpf } });
     

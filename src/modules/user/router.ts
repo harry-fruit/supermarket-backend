@@ -2,14 +2,14 @@ import { Request, Response, Router } from "express";
 import { Model } from "sequelize";
 import { HttpResponse, HttpResponseType } from "../../utils/HttpResponse";
 import { UpdateUserDto } from "./dto/updateUser.dto";
-import { createUser } from "./handlers/createUser";
-import { deleteUser } from "./handlers/deleteUser";
-import { updateUser } from "./handlers/updateUser";
+import { CreateUser } from "./handlers/createUser";
+import { UpdateUser } from "./handlers/updateUser";
 import { UserInterface } from "./interfaces/User.interface";
 import { StatusCodes as HttpStatusCode , ReasonPhrases as HttpStatus } from 'http-status-codes';
-import { getAllUsers, getUser } from "./handlers/getUser";
 import { ErrorHandler } from "../../utils/ErrorHandler";
 import { IsValidCPF } from "../../utils/Validators";
+import { GetAllUsers, GetUser } from "./handlers/getUser";
+import { DeleteUser } from "./handlers/deleteUser";
 
 export const userRouter: Router = Router();
 
@@ -37,7 +37,7 @@ userRouter.post("/create-user", async (request: Request, response: Response): Pr
       }
       
       
-      const handledResponse: Model<UserInterface> | string = await createUser(payload);
+      const handledResponse: Model<UserInterface> | string = await CreateUser(payload);
       
       if(typeof handledResponse == 'string'){
         
@@ -68,7 +68,7 @@ userRouter.get("/", async (request: Request, response: Response): Promise<void> 
       const limit = Number.parseInt(request.query.limit as string);
       const currentPage = Number.parseInt(request.query.currentPage as string);
 
-      const handledResponse: Model<UserInterface>[] | string = await getAllUsers({ limit, currentPage });
+      const handledResponse: Model<UserInterface>[] | string = await GetAllUsers({ limit, currentPage });
       
       if(typeof handledResponse == 'string'){
         
@@ -123,7 +123,7 @@ userRouter.get("/get-user", async (request: Request, response: Response): Promis
         return;
       }
 
-      const handledResponse: Model<UserInterface> | null = await getUser(cpf);
+      const handledResponse: Model<UserInterface> | null = await GetUser(cpf);
 
       if(!handledResponse) {
         const responsePayload = HttpResponse(HttpStatus.NOT_FOUND, HttpStatusCode.NOT_FOUND, {})
@@ -183,7 +183,7 @@ userRouter.patch("/update-user", async (request: Request, response: Response): P
           return;
       }
       
-      const handledResponse: Model<UserInterface> | string  = await updateUser(request.body as UpdateUserDto);
+      const handledResponse: Model<UserInterface> | string  = await UpdateUser(request.body as UpdateUserDto);
 
       if(typeof handledResponse == 'string') {
         if (handledResponse === 'User not found.') {
@@ -231,7 +231,7 @@ userRouter.delete( "/delete-user", async (request: Request, response: Response):
         return;
       }
       
-      const isDeleted: number = await deleteUser(id);
+      const isDeleted: number = await DeleteUser(id);
 
       if(!isDeleted) {
         const responsePayload: HttpResponseType = HttpResponse(HttpStatus.NOT_ACCEPTABLE, HttpStatusCode.NOT_ACCEPTABLE, "User Could not be deleted")

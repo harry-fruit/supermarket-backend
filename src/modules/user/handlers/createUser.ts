@@ -3,7 +3,7 @@ import { Bcrypt } from "../../../utils/Bcrypt";
 import { UserEntity } from "../entities/User.entity";
 import { UserInterface } from "../interfaces/User.interface";
 
-export const createUser = async (payload: UserInterface): Promise<Model<UserInterface> | string> => {
+export const CreateUser = async (payload: UserInterface): Promise<Model<UserInterface> | string> => {
   try {
     const { password, cpf, email } = payload;
 
