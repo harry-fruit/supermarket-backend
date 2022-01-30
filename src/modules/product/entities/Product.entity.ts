@@ -3,22 +3,31 @@ import { UUIDV4 } from "sequelize";
 import { DbInstance } from "../../../database/database";
 
 export const ProductEntity = DbInstance.define("Product", {
-  id: {
+  Id: {
     type: DataType.UUID,
     allowNull: false,
     unique: true,
     primaryKey: true,
     defaultValue: UUIDV4,
   },
-  name: {
-      type: DataType.STRING(50),
+  Name: {
+      type: DataType.STRING(70),
       allowNull: false,
   },
-  price: {
+  UniqueCode: {
+      type: DataType.STRING(70),
+      allowNull: false,
+  },
+  Price: {
       type: DataType.FLOAT,
       allowNull: false,
   },
-  description: {
+  Description: {
       type: DataType.STRING(500),
-  }
+  },
+  Stock: {
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });

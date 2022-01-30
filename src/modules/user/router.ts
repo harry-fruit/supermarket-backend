@@ -17,8 +17,8 @@ userRouter.post("/create-user", async (request: Request, response: Response): Pr
     try {
       const payload = request.body as UserInterface;
       
-      const { cpf } = payload;
-      const isValidCPF = IsValidCPF(cpf);
+      const { Cpf } = payload;
+      const isValidCPF = IsValidCPF(Cpf);
 
       if(!isValidCPF){
 
@@ -148,9 +148,9 @@ userRouter.patch("/update-user", async (request: Request, response: Response): P
     try {
       const payload = request.body as UpdateUserDto;
       
-      const { cpf } = payload;
+      const { Cpf } = payload;
       
-      if (!cpf) {
+      if (!Cpf) {
         const message: string = 'Insert a CPF.'
         
         const responsePayload: HttpResponseType = HttpResponse(
@@ -165,7 +165,7 @@ userRouter.patch("/update-user", async (request: Request, response: Response): P
           return;
       }
     
-      const isValidCPF = IsValidCPF(cpf);
+      const isValidCPF = IsValidCPF(Cpf);
 
       if(!isValidCPF){
 

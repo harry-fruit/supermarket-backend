@@ -5,20 +5,20 @@ import { UserInterface } from "../interfaces/User.interface";
 
 export const CreateUser = async (payload: UserInterface): Promise<Model<UserInterface> | string> => {
   try {
-    const { password, cpf, email } = payload;
+    const { Password, Cpf, Email } = payload;
 
-    const emailExists: Model<UserInterface> | null = await UserEntity.findOne({ where: { email } })
-    const cpfExists  : Model<UserInterface> | null = await UserEntity.findOne({ where: { cpf } })
+    const emailExists: Model<UserInterface> | null = await UserEntity.findOne({ where: { Email } })
+    const cpfExists  : Model<UserInterface> | null = await UserEntity.findOne({ where: { Cpf } })
 
     if (emailExists) {
-      return `The E-Mail '${email}' is not available.`
+      return `The E-Mail '${Email}' is not available.`
     } 
     else if (cpfExists) {
-      return `The CPF '${cpf}' is not available.`
+      return `The CPF '${Cpf}' is not available.`
     };
     
-    const hashedPassword = await Bcrypt.encrypt(password);
-    payload.password = hashedPassword;
+    const hashedPassword = await Bcrypt.encrypt(Password);
+    payload.Password = hashedPassword;
   
     const result: Model<UserInterface> = await UserEntity.create({ ...payload });
     return result;

@@ -4,48 +4,49 @@ import { DbInstance } from "../../../database/database";
 export const UserEntity = DbInstance.define(
   "User",
   {
-    id: {
+    Id: {
       type: DataType.INTEGER,
       allowNull: false,
       unique: true,
       primaryKey: true,
       autoIncrement: true,
     },
-    firstName: {
+    FirstName: {
       type: DataType.STRING(50),
       allowNull: false,
     },
-    lastName: {
+    LastName: {
       type: DataType.STRING(50),
       allowNull: false,
     },
-    age: {
+    Age: {
       type: DataType.INTEGER,
       allowNull: false,
     },
-    gender: {
+    Gender: {
       type: DataType.CHAR(1),
       allowNull: false,
     },
-    address: {
+    Address: {
       type: DataType.STRING(255),
       allowNull: false,
     },
-    cpf: {
+    Cpf: {
       type: DataType.STRING(50),
       allowNull: false,
       unique: true,
     },
-    phone: {
+    Phone: {
       type: DataType.STRING(50),
       allowNull: true,
-    },
-    email: {
       unique: true,
-      type: DataType.STRING(150),
+    },
+    Email: {
+      unique: true,
+      type: DataType.STRING(100),
       allowNull: false,
     },
-    password: {
+    Password: {
       type: DataType.STRING(255),
       allowNull: false,
     },

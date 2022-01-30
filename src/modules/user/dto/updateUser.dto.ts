@@ -1,11 +1,11 @@
 export type UpdateUserDto = {
-  firstName?: string;
-  lastName?: string;
-  age?: number;
-  gender?: string;
-  address?: string;
-  cpf?: string;
-  phone?: string;
-  email?: string;
-  password?: string;
+  FirstName?: string;
+  LastName?: string;
+  Age?: number;
+  Gender?: string;
+  Address?: string;
+  Cpf?: string;
+  Phone?: string;
+  Email?: string;
+  Password?: string;
 };

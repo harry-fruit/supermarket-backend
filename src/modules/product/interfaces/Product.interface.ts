@@ -1,6 +1,8 @@
 export interface ProductInterface {
-  id?: string;
-  name: string;
-  prince: number;
-  description: string;
+  Id?: string;
+  Name: string;
+  UniqueCode: string;
+  Price: number;
+  Description: string;
+  Stock: number;
 }
