@@ -5,7 +5,7 @@ import { CreateProduct } from "./handlers/CreateProduct";
 import { ProductInterface } from "./interfaces/Product.interface";
 import { StatusCodes as HttpStatusCode , ReasonPhrases as HttpStatus } from 'http-status-codes';
 import { ErrorHandler } from "../../utils/ErrorHandler";
-import { GetProductById } from "./handlers/GetProduct";
+import { GetAllProducts, GetProductById, GetProductByUniqueCode } from "./handlers/GetProduct";
 
 export const productRouter: Router = Router();
 
@@ -41,6 +41,7 @@ productRouter.post("/create-product", async (request: Request, response: Respons
 productRouter.get("/get-product", async (request: Request, response: Response) => {
   try {
     let { UniqueCode, Id } = request.query;
+    let handledResponse: Model<ProductInterface> | null = null;
     
     if (!UniqueCode || !Id) {
       const message = "Please, insert a value to Id or Unique Code."
@@ -54,12 +55,12 @@ productRouter.get("/get-product", async (request: Request, response: Response) =
     }
 
     Id         = Id ? Id.toString() : '';
-    UniqueCode = UniqueCode.toString();
+    UniqueCode = UniqueCode ? UniqueCode.toString() : '';
 
-    if (Id) {
-      const handledResponse: Model<ProductInterface> | null = await GetProductById(Id);
-    } else if (UniqueCode) {
-      const handledResponse: Model<ProductInterface> | null = await GetProductById(Id);
+    if (UniqueCode) {
+      handledResponse = await GetProductByUniqueCode(UniqueCode);
+    } else if (Id) {
+      handledResponse = await GetProductById(Id);
     }
 
     if(!handledResponse) {
@@ -73,9 +74,42 @@ productRouter.get("/get-product", async (request: Request, response: Response) =
 
     const responsePayload: HttpResponseType = HttpResponse(HttpStatus.OK, HttpStatusCode.OK, handledResponse);
 
-    response.send(responsePayload);
+    response
+      .status(HttpStatusCode.OK)
+      .send(responsePayload);
     
   } catch (error: any) {
     throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error)
   };
-})
+});
+
+productRouter.get("/", async (request: Request, response: Response) => {
+  try {
+    const limit = Number.parseInt(request.query.limit as string);
+    const currentPage = Number.parseInt(request.query.currentPage as string);
+
+    const handledResponse: Model<ProductInterface>[] | string = await GetAllProducts({ limit, currentPage });
+    
+    if(typeof handledResponse == 'string'){
+      
+      const responsePayload: HttpResponseType = HttpResponse(HttpStatus.BAD_REQUEST, HttpStatusCode.BAD_REQUEST, handledResponse);
+      
+      response
+        .status(HttpStatusCode.BAD_REQUEST)
+        .send(responsePayload);
+        return;
+    }
+
+    const responsePayload: HttpResponseType = HttpResponse(HttpStatus.OK, HttpStatusCode.OK, handledResponse);
+
+    response
+      .status(HttpStatusCode.OK)
+      .send(responsePayload);
+
+      
+    } catch (error: any) {
+    throw ErrorHandler(HttpStatus.INTERNAL_SERVER_ERROR, 500, error);
+  }
+});
+
+
