@@ -7,7 +7,7 @@ import { IsValidCPF } from "../../utils/Validators";
 import { UserInterface } from "./interfaces/User.interface";
 import { CreateUser } from "./handlers/CreateUser";
 import { GetAllUsers, GetUser } from "./handlers/GetUser";
-import { UpdateUserDto } from "./dto/updateUser.dto";
+import { UpdateUserDTO } from "./dto/UpdateUser.dto";
 import { UpdateUser } from "./handlers/UpdateUser";
 import { DeleteUser } from "./handlers/DeleteUser";
 
@@ -16,7 +16,7 @@ export const userRouter: Router = Router();
 userRouter.post("/create-user", async (request: Request, response: Response): Promise<void> => {
     try {
       const payload = request.body as UserInterface;
-      
+
       const { Cpf } = payload;
       const isValidCPF = IsValidCPF(Cpf);
 
@@ -146,7 +146,7 @@ userRouter.get("/get-user", async (request: Request, response: Response): Promis
 
 userRouter.patch("/update-user", async (request: Request, response: Response): Promise<void> => {
     try {
-      const payload = request.body as UpdateUserDto;
+      const payload = request.body as UpdateUserDTO;
       
       const { Cpf } = payload;
       
@@ -183,7 +183,7 @@ userRouter.patch("/update-user", async (request: Request, response: Response): P
           return;
       }
       
-      const handledResponse: Model<UserInterface> | string  = await UpdateUser(request.body as UpdateUserDto);
+      const handledResponse: Model<UserInterface> | string  = await UpdateUser(request.body as UpdateUserDTO);
 
       if(typeof handledResponse == 'string') {
         if (handledResponse === 'User not found.') {

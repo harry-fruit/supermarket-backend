@@ -1,10 +1,10 @@
 import { Model } from "sequelize/dist";
 import { Bcrypt } from "../../../utils/Bcrypt";
-import { UpdateUserDto } from "../dto/updateUser.dto";
+import { UpdateUserDTO } from "../dto/UpdateUser.dto";
 import { UserEntity } from "../entities/User.entity";
 import { UserInterface } from "../interfaces/User.interface";
 
-export const UpdateUser = async (payload: UpdateUserDto): Promise<Model<UserInterface> | string>  => {
+export const UpdateUser = async (payload: UpdateUserDTO): Promise<Model<UserInterface> | string>  => {
   const { Password, Cpf, Email } = payload;
 
   const emailExists: Model<UserInterface> | null = await UserEntity.findOne({ where: { Email } })

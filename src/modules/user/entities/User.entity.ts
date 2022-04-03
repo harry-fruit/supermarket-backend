@@ -24,7 +24,7 @@ export const UserEntity = DbInstance.define(
       allowNull: false,
     },
     Gender: {
-      type: DataType.CHAR(1),
+      type: DataType.CHAR(3),
       allowNull: false,
     },
     Address: {

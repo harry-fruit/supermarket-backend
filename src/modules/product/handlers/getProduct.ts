@@ -37,6 +37,7 @@ export const GetProductById = async (productId: string): Promise<Model<ProductIn
 
 export const GetProductByUniqueCode = async (UniqueCode: string): Promise<Model<ProductInterface> | null> => {
     try{
+      
       const user: Model<ProductInterface> | null = await ProductEntity.findOne({ where: { UniqueCode } });
       
       return user;

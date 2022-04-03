@@ -112,4 +112,6 @@ productRouter.get("/", async (request: Request, response: Response) => {
   }
 });
 
-
+productRouter.patch("/update-product", async (request: Request, response: Response) => {
+  
+})
